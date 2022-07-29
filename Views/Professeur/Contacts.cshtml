@@ -1,0 +1,218 @@
+﻿@model PagedList.IPagedList<Contact>
+@{
+    ViewBag.Title = "MonEspace";
+
+    Layout = "~/Views/Shared/ProfesseurLayout.cshtml";
+}
+@using PagedList.Mvc;
+@using Personnel;
+<style>
+    table {
+        background: #f5f5f5;
+        border-collapse: separate;
+        box-shadow: inset 0 1px 0 #fff;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: left;
+        width: 800px;
+    }
+
+    th {
+        background: linear-gradient(black,black);
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        box-shadow: inset 0 1px 0 black;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        position: relative;
+        text-shadow: 0 1px 0 #000;
+    }
+
+        th:after {
+            background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+
+        th:first-child {
+            border-left: 1px solid #777;
+            box-shadow: inset 1px 1px 0 black;
+        }
+
+        th:last-child {
+            box-shadow: inset -1px 1px 0 black;
+        }
+
+    td {
+        border-right: 1px solid #fff;
+        border-left: 1px solid #e8e8e8;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #e8e8e8;
+        transition: all 300ms;
+    }
+
+        td:first-child {
+            box-shadow: inset 1px 0 0 #fff;
+        }
+
+        td:last-child {
+            border-right: 1px solid #e8e8e8;
+            box-shadow: inset -1px 0 0 #fff;
+        }
+
+    tr {
+    }
+
+        tr:nth-child(odd) td {
+            background: #f1f1f1;
+        }
+
+        tr:last-of-type td {
+            box-shadow: inset 0 -1px 0 #fff;
+        }
+
+            tr:last-of-type td:first-child {
+                box-shadow: inset 1px -1px 0 #fff;
+            }
+
+            tr:last-of-type td:last-child {
+                box-shadow: inset -1px -1px 0 #fff;
+            }
+
+    tbody:hover td {
+        color: transparent;
+        text-shadow: 0 0 3px #aaa;
+    }
+
+    tbody:hover tr:hover td {
+        color: #444;
+        text-shadow: 0 1px 0 #fff;
+    }
+
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+
+
+<body>
+    <div class="container">
+
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+        <div class="content">
+            <div class="row">
+                <div class="col-lg-4" style="margin-top:10px;">
+                    @using (Html.BeginForm("Contacts", "Professeur", FormMethod.Get))
+                    {
+                        <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke;width:95%;margin-left:2.5%;margin-right:2.5%" placeholder="matière,professeur,...." /></a>
+
+                    }
+                </div>
+
+                <div class="col-lg-4" style="margin-top:10px;">
+                    <a href="@Url.Action("Contacts","Professeur")" class="btn btn-primary" style="float:right; background-color:black;width:100%">  Initialiser</a>
+                </div>
+                <div class="col-lg-4">
+
+                </div>
+            </div>
+            <div class="container">
+                <div class="table-responsive p-0" style="margin-top:50px;">
+                    <table class="table align-items-center mb-0" id="tableID">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-white text-xxs font-weight-bolder ps-2">Nom</th>
+                                <th class="text-uppercase text-white text-xxs font-weight-bolder ps-2">Prénom</th>
+                                <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">Téléphone</th>
+
+                                <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">
+                                    Email
+                                </th>
+                                <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">
+                                    Titre
+                                </th>
+                                <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">Date</th>                              
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var contact in Model)
+                            {
+                                <tr>
+                                    <td><h6 class="mb-0 text-sm">@contact.Nom </h6></td>
+                                    <td><h6 class="mb-0 text-sm"> @contact.Prenom </h6></td>
+                                    <td><h6 class="mb-0 text-sm">@contact.Telephone</h6></td>
+                                    <td><h6 class="mb-0 text-sm">@contact.Email</h6></td>
+                                    <td><h6 class="mb-0 text-sm">@contact.Titre</h6></td>
+                                    <td><h6 class="mb-0 text-sm">@contact.date_creation.ToString().Substring(0,10)</h6></td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+                <center>
+                    <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+                        @Html.PagedListPager(Model, page => Url.Action("Contacts", new { page, searching = ViewBag.CurrentFilter }) + "#Product", new PagedListRenderOptions { MaximumPageNumbersToDisplay = 4, ContainerDivClasses = new List<string> { "MenuTab", "MenuTab" }, LiElementClasses = new List<string> { "pagination-bar", "pagination-bar" }, DelimiterBetweenPageNumbers = "-" })
+
+                    </div>
+                </center>
+            </div>
+            <!-- container -->
+        </div>
+
+    </div>
+</body>
+</html>

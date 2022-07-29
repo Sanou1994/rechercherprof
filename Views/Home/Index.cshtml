@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+            <div class="card" style="background-image: url('../../images/prof.png'); background-repeat: no-repeat;">
+                <a href="@Url.Action("ChoixProfesseur", "Professeur")">
+                    <div class="card-body p-3 pt-2">
+                        <div class="p-6">
+                            <h4 class="mb-0"></h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer pt-4">
+                        <p class="mb-0"><span class="text-dark pt-4 text-sm font-weight-bolder">Chercher Professeur </span></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+            <div class="card" style="background-image: url('../../images/collocataire.jpg'); background-repeat: no-repeat;">
+                <a href="@Url.Action("ListConsultation", "Docteur")">
+                    <div class="card-body p-3 pt-2">
+                        <div class="p-6">
+                            <h4 class="mb-0"></h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-4">
+                        <p class="mb-0"><span class="text-dark text-sm font-weight-bolder">Chercher Collocataire </span></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+            <div class="card" style="background-image: url('../../images/sang.png'); background-repeat: no-repeat;">
+                <a href="@Url.Action("ListConsultation", "Docteur")">
+                    <div class="card-body p-3 pt-2">
+                        <div class="p-6">
+                            <h4 class="mb-0"></h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-4">
+                        <p class="mb-0"><span class="text-dark text-sm font-weight-bolder">Chercher Sang </span></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

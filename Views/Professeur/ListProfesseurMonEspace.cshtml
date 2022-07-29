@@ -1,0 +1,245 @@
+﻿
+@model PagedList.IPagedList<Professeur>
+@{
+    ViewBag.Title = "MonEspace";
+    Layout = "~/Views/Shared/ProfesseurLayout.cshtml";
+}
+@using PagedList.Mvc;
+@using Personnel;
+<style>
+    body {
+        margin-top: 20px;
+    }
+
+    .card-box {
+        padding: 20px;
+        border-radius: 3px;
+        margin-bottom: 30px;
+        background-color: #fff;
+    }
+
+    .social-links li a {
+        border-radius: 50%;
+        color: rgba(121, 121, 121, .8);
+        display: inline-block;
+        height: 30px;
+        line-height: 27px;
+        border: 2px solid rgba(121, 121, 121, .5);
+        text-align: center;
+        width: 30px
+    }
+
+        .social-links li a:hover {
+            color: #797979;
+            border: 2px solid #797979
+        }
+
+    .thumb-lg {
+        height: 88px;
+        width: 88px;
+    }
+
+    .img-thumbnail {
+        padding: .25rem;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: .25rem;
+        max-width: 100%;
+        height: auto;
+    }
+
+    .text-pink {
+        color: #ff679b !important;
+    }
+
+    .btn-rounded {
+        border-radius: 2em;
+    }
+
+    .text-muted {
+        color: #98a6ad !important;
+    }
+
+    h4 {
+        line-height: 22px;
+        font-size: 18px;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<div class="container" style="margin-top:50px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+    <div class="content">
+        <div class="row">
+            <div class="col-lg-4" style="margin-top:10px;">
+                @using (Html.BeginForm("ListProfesseurMonEspace", "Professeur", FormMethod.Get))
+                {
+                    <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke;width:95%;margin-left:2.5%;margin-right:2.5%" placeholder="matière,professeur,...." /></a>
+
+                }
+            </div>
+
+            <div class="col-lg-4" style="margin-top:10px;">
+                <a href="@Url.Action("ListProfesseurMonEspace","Professeur")" class="btn btn-primary" style="float:right; background-color:black;width:100%">  Initialiser</a>
+            </div>
+            <div class="col-lg-4">
+
+            </div>
+        </div>
+        <div class="container">
+            <!-- end row -->
+            <div class="row">
+                @foreach (var prof in Model)
+                {
+
+
+                    <div class="col-lg-4">
+                        <div class="text-center card-box" style="margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                            <div class="member-card">
+                                @if (@prof.photo != null)
+                                {
+                                    <div class="thumb-lg member-thumb mx-auto"><img src="~/Photos/@prof.photo" class="rounded-circle img-thumbnail" alt="profile-image"></div>
+
+                                }
+                                else
+                                {
+                                    <div class="thumb-lg member-thumb mx-auto"><img src="~/images/logo.png" class="rounded-circle img-thumbnail" alt="profile-image"></div>
+
+                                }
+                                <div class="">
+                                    <h4> @prof.prenom @prof.nom</h4>
+                                    <p class="text-muted"><span><a href="#" class="text-pink">@prof.matiere_dispense_1-@prof.matiere_dispense_2-@prof.matiere_dispense_3</a></span></p>
+                                </div>
+                                <a type="button" href="@Url.Action("VoirStatistiques","Professeur")" class="btn btn-primary  btn-rounded waves-effect w-md waves-light">Voir Ses Statistiques</a>
+                                <a type="button" href="@Url.Action("VoirCvProfesseur","Professeur", new {Professeur=prof.id_professeur})" class="btn btn-primary  btn-rounded waves-effect w-md waves-light">Voir Son CV</a>
+                                <button onclick="voirObservation(@prof.id_professeur)" class="btn btn-primary  btn-rounded waves-effect w-md waves-light">Contacts</button>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+            <div style="float: right;">
+                <a href="@Url.Action("ChoixProfesseur","Professeur")" class="btn btn-primary" style="float: left; background-color: black; width: 100%"> <span class="fa "></span> Retour</a>
+            </div>
+        </div>
+        <center>
+            <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+                @Html.PagedListPager(Model, page => Url.Action("ListProfesseurMonEspace", new { page, searching = ViewBag.CurrentFilter }) + "#Product", new PagedListRenderOptions { MaximumPageNumbersToDisplay = 4, ContainerDivClasses = new List<string> { "MenuTab", "MenuTab" }, LiElementClasses = new List<string> { "pagination-bar", "pagination-bar" }, DelimiterBetweenPageNumbers = "-" })
+            </div>
+        </center>
+        <!-- container -->
+
+    </div>
+
+</div>
+
+<div id="id01" class="modal container-fluid ">
+    <center>
+        <div class="container" style="width:50%;">
+            <div class="card z-index-0 fadeIn3 fadeInBottom" style="margin-top:50px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class=" shadow-primary border-radius-lg py-3 pe-1" style="background-color:black; opacity:0.9">
+                        <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Saisir Vos Informations</h4>
+                    </div>
+                </div>
+                <center> <p style="background-color:red;color:white">@ViewBag.sms</p></center>
+                <div class="card-body">
+                    <form role="form" class="text-start" method="post" action="@Url.Action("AddContact","Professeur")">
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-control" name="Nom" required>
+                            <input type="text" id="idProfesseur" class="form-control" name="idProfesseur" hidden>
+
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Prenom</label>
+                            <input type="text" class="form-control" name="Prenom" required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control" name="Email" required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Téléphone</label>
+                            <input type="text" maxlength="9" class="form-control" name="Telephone" required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="text" style="width:100%">Titre</label>
+                            <select name="Titre" class="form-control" required>
+                                <option selected></option>
+                                <option>Père de l'élève</option>
+                                <option>Mère de l'élève</option>
+                                <option>Frère de l'élève</option>
+                                <option>Soeur de l'élève</option>
+                                <option>Epoux de l'élève</option>
+                                <option>Epouse de l'élève</option>
+                                <option>Tuteur</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <div class="col-6">
+
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-primary" style="background-color:black;float:right;margin-left:10px; color:white; opacity:0.9">Valider</button>
+
+                                <a class="btn btn-primary" onclick="document.getElementById('id01').style.display='none'" style="float: right; opacity: 0.9; background-color:black"> Retour</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </center>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+
+<script type="text/javascript">
+    function voirObservation(id) {
+        document.getElementById('idProfesseur').value=id
+        document.getElementById('id01').style.display = 'block'
+        console.log(document.getElementById('idProfesseur').value)
+    }
+</script>
